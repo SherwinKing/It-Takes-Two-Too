@@ -1,15 +1,5 @@
 #include "text_renderer.hpp"
 
-GLuint text_shader_program;
-GLint attribute_coord;
-GLint uniform_tex;
-GLint uniform_color;
-
-GLuint vbo;
-
-//try
-GLuint vertex_buffer_for_color_program;
-
 struct Point {
 	GLfloat x;
 	GLfloat y;
@@ -18,7 +8,9 @@ struct Point {
 };
 
 // Ref: base codes and https://gitlab.com/wikibooks-opengl/modern-tutorials/-/tree/master/text01_intro
-void init_text_rendering_gl_env() {
+TextRenderer::TextRenderer(std::string font_file_path_from_dist) {
+	this->font_file_path = data_path(font_file_path_from_dist);
+
 	// Init shaders
 	text_shader_program = gl_compile_program(
 		//vertex shader:
@@ -56,7 +48,14 @@ void init_text_rendering_gl_env() {
 	glGenVertexArrays(1, &vertex_buffer_for_color_program);
 
 	GL_ERRORS();
+
+	// // Init FreeType2 library
+	// if (FT_Init_FreeType(&ft)) {
+	// 	fprintf(stderr, "Could not init freetype library
+	// }
 }
+
+TextRenderer::TextRenderer() : TextRenderer("font/Wellfleet/Wellfleet-Regular.ttf"){}
 
 
 /**
@@ -69,13 +68,12 @@ void init_text_rendering_gl_env() {
  * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
  * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
  */
-void render_text(const char *text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
+void TextRenderer::render_text(const char *text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
 	// init freetype
 	FT_Library library;
 	FT_Init_FreeType( &library );
 	FT_Face ft_face = nullptr;
-	const char *fontfile = "/System/Library/Fonts/Monaco.ttf";
-	FT_New_Face (library, fontfile, 0, &ft_face);
+	FT_New_Face(library, font_file_path.c_str(), 0, &ft_face);
 
 	FT_Set_Pixel_Sizes(ft_face, 0, font_size);
 
