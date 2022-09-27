@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <string>
+#include <tuple>
 
 #include "data_path.hpp"
 
@@ -57,7 +58,7 @@ public:
 	 * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
 	 * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
 	 */
-	void render_text(const char *text, float x, float y, float sx, float sy, 
+	std::tuple<float, float> render_text(const std::string text, float x, float y, float sx, float sy, 
 		glm::vec4 color  = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
 		uint32_t font_size = 36);
 };

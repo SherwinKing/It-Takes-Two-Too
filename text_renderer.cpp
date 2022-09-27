@@ -68,7 +68,7 @@ TextRenderer::TextRenderer() : TextRenderer("font/Wellfleet/Wellfleet-Regular.tt
  * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
  * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
  */
-void TextRenderer::render_text(const char *text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
+std::tuple<float, float> TextRenderer::render_text(std::string text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
 	// init freetype
 	FT_Library library;
 	FT_Init_FreeType( &library );
@@ -81,7 +81,7 @@ void TextRenderer::render_text(const char *text, float x, float y, float sx, flo
 
 	hb_buffer_t *buf = hb_buffer_create();
 
-	hb_buffer_add_utf8(buf, text, -1, 0, -1);
+	hb_buffer_add_utf8(buf, text.c_str(), -1, 0, -1);
 	hb_buffer_guess_segment_properties(buf);
 
 	hb_shape(font, buf, NULL, 0);
@@ -179,4 +179,6 @@ void TextRenderer::render_text(const char *text, float x, float y, float sx, flo
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	GL_ERRORS();
+
+	return std::tuple<float, float>(x, y);
 }
