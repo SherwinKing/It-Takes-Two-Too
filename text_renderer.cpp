@@ -89,11 +89,6 @@ std::tuple<float, float> TextRenderer::render_text(std::string text, float x, fl
 	unsigned int len = hb_buffer_get_length(buf);
 	hb_glyph_info_t *info = hb_buffer_get_glyph_infos(buf, NULL);
 
-	std::vector<FT_Bitmap> ft_bitmap_vector = std::vector<FT_Bitmap>();
-	ft_bitmap_vector.reserve(len);
-	std::vector<FT_GlyphSlot> ft_glyphslot_vector = std::vector<FT_GlyphSlot>();
-	ft_glyphslot_vector.reserve(len);
-
 	// based on https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
 	glUseProgram(text_shader_program);
 
@@ -138,12 +133,9 @@ std::tuple<float, float> TextRenderer::render_text(std::string text, float x, fl
 	// https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
 	for (unsigned int i = 0; i < len; i++) {
 		FT_Load_Glyph(ft_face, info[i].codepoint, FT_LOAD_DEFAULT);
-		ft_glyphslot_vector[i] = ft_face->glyph;
-		FT_Render_Glyph(ft_glyphslot_vector[i], FT_RENDER_MODE_NORMAL);
-		ft_bitmap_vector[i] = ft_glyphslot_vector[i]->bitmap;
-		
-		FT_GlyphSlot & glyph_slot = ft_glyphslot_vector[i];
-		FT_Bitmap & ftBitmap = ft_bitmap_vector[i];
+		FT_GlyphSlot & glyph_slot = ft_face->glyph;
+		FT_Render_Glyph(glyph_slot, FT_RENDER_MODE_NORMAL);
+		FT_Bitmap & ftBitmap = glyph_slot->bitmap;
 
 
 		// Upload the "bitmap", which contains an 8-bit grayscale image, as an RED texture
