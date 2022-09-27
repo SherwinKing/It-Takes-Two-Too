@@ -169,6 +169,7 @@ std::tuple<float, float> TextRenderer::render_text(std::string text, float x, fl
 	glDeleteTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	hb_buffer_destroy(buf);
 
 	GL_ERRORS();
 
