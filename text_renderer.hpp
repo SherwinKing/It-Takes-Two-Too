@@ -25,9 +25,17 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <iterator>
 #include <tuple>
 
 #include "data_path.hpp"
+
+typedef struct RenderResult {
+	float cusor_ending_x;
+	float cusor_ending_y;
+	std::string remaining_text;
+} RenderResult;
 
 class TextRenderer {
 private:
@@ -59,7 +67,7 @@ public:
 	 * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
 	 * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
 	 */
-	std::tuple<float, float> render_text(const std::string text, float x, float y, float sx, float sy, 
+	RenderResult render_text(const std::string text, float x, float y, float sx, float sy, 
 		glm::vec4 color  = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
 		uint32_t font_size = 36);
 };

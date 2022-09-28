@@ -70,8 +70,7 @@ TextRenderer::TextRenderer() : TextRenderer("font/Wellfleet/Wellfleet-Regular.tt
  * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
  * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
  */
-std::tuple<float, float> TextRenderer::render_text(std::string text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
-	// init freetype
+RenderResult TextRenderer::render_text(std::string text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
 	FT_Face ft_face = nullptr;
 	FT_New_Face(library, font_file_path.c_str(), 0, &ft_face);
 
@@ -91,10 +90,6 @@ std::tuple<float, float> TextRenderer::render_text(std::string text, float x, fl
 
 	// based on https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
 	glUseProgram(text_shader_program);
-
-	// Eye protecting warm yellow background
-	glClearColor(1, 1, 0.9, 0.5);
-	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Enable blending
 	glEnable(GL_BLEND);
@@ -129,39 +124,75 @@ std::tuple<float, float> TextRenderer::render_text(std::string text, float x, fl
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
+	std::string remaining_text;
+	// based on: https://stackoverflow.com/questions/236129/how-do-i-iterate-over-the-words-of-a-string
+	std::istringstream iss(text);
+	std::vector<std::string> words{std::istream_iterator<std::string>{iss},
+							std::istream_iterator<std::string>{}};
+
+
 	// Render characters
 	// https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
-	for (unsigned int i = 0; i < len; i++) {
-		FT_Load_Glyph(ft_face, info[i].codepoint, FT_LOAD_DEFAULT);
-		FT_GlyphSlot & glyph_slot = ft_face->glyph;
-		FT_Render_Glyph(glyph_slot, FT_RENDER_MODE_NORMAL);
-		FT_Bitmap & ftBitmap = glyph_slot->bitmap;
+	uint32_t char_id = 0;
+	uint32_t next_word_id = 0;
+	uint32_t next_word_id_increment;
+	while (char_id < len) {
+	// for (unsigned int i = 0; i < len; i++) {
+		// Check if next char is a space
+		uint32_t render_char_num;
+		if (text[char_id] == ' ') {
+			render_char_num = 1;
+			next_word_id_increment = 0;
+		} else {
+			render_char_num = words[next_word_id].length();
+			next_word_id_increment = 1;
+		}
+
+		// // Render the word
+
+		for (uint32_t i = char_id; i < char_id + render_char_num; i++) {
+
+			FT_Load_Glyph(ft_face, info[i].codepoint, FT_LOAD_DEFAULT);
+			FT_GlyphSlot & glyph_slot = ft_face->glyph;
+			FT_Render_Glyph(glyph_slot, FT_RENDER_MODE_NORMAL);
+			FT_Bitmap & ftBitmap = glyph_slot->bitmap;
 
 
-		// Upload the "bitmap", which contains an 8-bit grayscale image, as an RED texture
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, ftBitmap.width, ftBitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, ftBitmap.buffer);
+			// Upload the "bitmap", which contains an 8-bit grayscale image, as an RED texture
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, ftBitmap.width, ftBitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, ftBitmap.buffer);
 
-		// Calculate the vertex and texture coordinates
-		float x2 = x + glyph_slot->bitmap_left * sx;
-		float y2 = -y - glyph_slot->bitmap_top * sy;
-		float w = ftBitmap.width * sx;
-		float h = ftBitmap.rows * sy;
+			// Calculate the vertex and texture coordinates
+			float x2 = x + glyph_slot->bitmap_left * sx;
+			float y2 = -y - glyph_slot->bitmap_top * sy;
+			float w = ftBitmap.width * sx;
+			float h = ftBitmap.rows * sy;
 
-		// Each point represents a corner of the texture: (vetex x, vertex y, texture x, texture y)
-		Point box[4] = {
-			{x2, -y2, 0, 0},
-			{x2 + w, -y2, 1, 0},
-			{x2, -y2 - h, 0, 1},
-			{x2 + w, -y2 - h, 1, 1},
-		};
+			// Each point represents a corner of the texture: (vetex x, vertex y, texture x, texture y)
+			Point box[4] = {
+				{x2, -y2, 0, 0},
+				{x2 + w, -y2, 1, 0},
+				{x2, -y2 - h, 0, 1},
+				{x2 + w, -y2 - h, 1, 1},
+			};
 
-		// Draw the character on the screen
-		glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			// Draw the character on the screen
+			glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		// Advance the cursor to the start of the next character
-		x += (glyph_slot->advance.x >> 6) * sx;
-		y += (glyph_slot->advance.y >> 6) * sy;
+			// Advance the cursor to the start of the next character
+			x += (glyph_slot->advance.x >> 6) * sx;
+			y += (glyph_slot->advance.y >> 6) * sy;
+		}
+
+		// Stop rendering if the cursor is about to cross the screen boundary
+		if (x > 0.8f) {
+			remaining_text = text.substr(char_id, len);
+			break;
+		}
+
+		// increment the index
+		char_id+=render_char_num;
+		next_word_id+=next_word_id_increment;
 	}
 
 	// Clean up
@@ -173,5 +204,6 @@ std::tuple<float, float> TextRenderer::render_text(std::string text, float x, fl
 
 	GL_ERRORS();
 
-	return std::tuple<float, float>(x, y);
+	RenderResult result = { x, y, remaining_text};
+	return result;
 }
