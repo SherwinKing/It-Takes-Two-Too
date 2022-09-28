@@ -8,7 +8,10 @@ struct Point {
 };
 
 // Ref: base codes and https://gitlab.com/wikibooks-opengl/modern-tutorials/-/tree/master/text01_intro
-TextRenderer::TextRenderer(std::string font_file_path_from_dist) {
+TextRenderer::TextRenderer(uint32_t window_width, uint32_t window_height, std::string font_file_path_from_dist) {
+	sx = 2.0f / window_width;
+	sy = 2.0f / window_height;
+
 	this->font_file_path = data_path(font_file_path_from_dist);
 	// init freetype
 	FT_Init_FreeType( &library );
@@ -57,8 +60,8 @@ TextRenderer::TextRenderer(std::string font_file_path_from_dist) {
 	// }
 }
 
-TextRenderer::TextRenderer() : TextRenderer("font/Wellfleet/Wellfleet-Regular.ttf"){}
-
+TextRenderer::TextRenderer(uint32_t window_width, uint32_t window_height)
+ : TextRenderer(window_width, window_height, "font/Wellfleet/Wellfleet-Regular.ttf"){}
 
 /**
  * Render text using the currently loaded font and currently set font size.
@@ -70,7 +73,7 @@ TextRenderer::TextRenderer() : TextRenderer("font/Wellfleet/Wellfleet-Regular.tt
  * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
  * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
  */
-RenderResult TextRenderer::render_text(std::string text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
+RenderResult TextRenderer::render_text(std::string text, float x, float y, glm::vec4 color, uint32_t font_size) {
 	FT_Face ft_face = nullptr;
 	FT_New_Face(library, font_file_path.c_str(), 0, &ft_face);
 

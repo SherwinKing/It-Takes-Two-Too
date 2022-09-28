@@ -48,14 +48,21 @@ private:
 	GLuint vbo;
 	GLuint vertex_buffer_for_color_program;
 
-public:
-	TextRenderer();
-	TextRenderer(std::string font_file_path_from_dist);
+	float sx;
+	float sy;
 
+public:
+	TextRenderer(uint32_t window_width, uint32_t window_height);
+	TextRenderer(uint32_t window_width, uint32_t window_height, std::string font_file_path_from_dist);
+
+	inline float get_line_height_by_font_size(uint32_t font_size) {
+		return sy * font_size * 2;
+	}
 
 	/**
 	 * Render text using the currently loaded font and currently set font size.
 	 * Rendering starts at coordinates (x, y), z is always 0.
+	 * The range of the pixel coordinates (x, y) is (-1, -1) to (1, 1).
 	 * The pixel coordinates that the FreeType2 library uses are scaled by (sx, sy).
 	 * 
 	 * Based on a tutorial and its corresponding codes:
