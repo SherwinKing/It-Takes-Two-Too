@@ -52,10 +52,6 @@ public:
 	TextRenderer();
 	TextRenderer(std::string font_file_path_from_dist);
 
-	/**
-	 * Initialize the OpenGL environment for text rendering.
-	 */
-	void init_text_rendering_gl_env();
 
 	/**
 	 * Render text using the currently loaded font and currently set font size.
