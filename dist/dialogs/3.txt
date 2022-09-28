@@ -1,0 +1,8 @@
+3
+5
+1 4 (1)The card game.
+2 4 (2)The card game.
+3 4 (3)The card game.
+4 4 (4)The card game.
+5 4 (5)The card game, since I have no choice...
+Excellent! I have five games: a card game, a card game, a card game, a card game, and a card game! Which one do you prefer?
