@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -52,11 +54,17 @@ private:
 	float sy;
 
 public:
+	TextRenderer();
 	TextRenderer(uint32_t window_width, uint32_t window_height);
 	TextRenderer(uint32_t window_width, uint32_t window_height, std::string font_file_path_from_dist);
 
+	inline void resize(uint32_t window_width, uint32_t window_height) {
+		sx = 2.0f / window_width;
+		sy = 2.0f / window_height;
+	}
+
 	inline float get_line_height_by_font_size(uint32_t font_size) {
-		return sy * font_size * 2;
+		return sy * font_size * 1.2;
 	}
 
 	/**
@@ -70,7 +78,7 @@ public:
 	 * https://gitlab.com/wikibooks-opengl/modern-tutorials/-/blob/master/text01_intro/text.cpp
 	 * Also used as reference: https://github.com/tangrams/harfbuzz-example/blob/master/src/hbshaper.h
 	 */
-	RenderResult render_text(const std::string text, float x, float y, float sx, float sy, 
+	RenderResult render_text(const std::string text, float x, float y,
 		glm::vec4 color  = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
 		uint32_t font_size = 36);
 };

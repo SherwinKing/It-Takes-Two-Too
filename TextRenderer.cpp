@@ -9,8 +9,7 @@ struct Point {
 
 // Ref: base codes and https://gitlab.com/wikibooks-opengl/modern-tutorials/-/tree/master/text01_intro
 TextRenderer::TextRenderer(uint32_t window_width, uint32_t window_height, std::string font_file_path_from_dist) {
-	sx = 2.0f / window_width;
-	sy = 2.0f / window_height;
+	resize(window_width, window_height);
 
 	this->font_file_path = data_path(font_file_path_from_dist);
 	// init freetype
@@ -62,6 +61,9 @@ TextRenderer::TextRenderer(uint32_t window_width, uint32_t window_height, std::s
 
 TextRenderer::TextRenderer(uint32_t window_width, uint32_t window_height)
  : TextRenderer(window_width, window_height, "font/Wellfleet/Wellfleet-Regular.ttf"){}
+
+TextRenderer::TextRenderer()
+ : TextRenderer(1920, 1080, "font/Wellfleet/Wellfleet-Regular.ttf"){}
 
 /**
  * Render text using the currently loaded font and currently set font size.
@@ -187,15 +189,15 @@ RenderResult TextRenderer::render_text(std::string text, float x, float y, glm::
 			y += (glyph_slot->advance.y >> 6) * sy;
 		}
 
-		// Stop rendering if the cursor is about to cross the screen boundary
-		if (x > 0.8f) {
-			remaining_text = text.substr(char_id, len);
-			break;
-		}
-
 		// increment the index
 		char_id+=render_char_num;
 		next_word_id+=next_word_id_increment;
+
+		// Stop rendering if the cursor is about to cross the screen boundary
+		if (x > 0.8 && char_id < len && text[char_id] != ' ') {
+			remaining_text = text.substr(char_id, len);
+			break;
+		}
 	}
 
 	// Clean up
