@@ -204,7 +204,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); //this is the default depth comparison function, but FYI you can change it.
 
-	scene.draw(*camera);
+	// scene.draw(*camera);
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
