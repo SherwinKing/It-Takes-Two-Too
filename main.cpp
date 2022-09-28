@@ -16,6 +16,9 @@
 //for screenshots:
 #include "load_save_png.hpp"
 
+#include "TextRenderer.hpp"
+#include "TextParagraph.hpp"
+
 //Includes for libSDL:
 #include <SDL.h>
 
