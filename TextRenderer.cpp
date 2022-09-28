@@ -1,4 +1,4 @@
-#include "text_renderer.hpp"
+#include "TextRenderer.hpp"
 
 struct Point {
 	GLfloat x;
