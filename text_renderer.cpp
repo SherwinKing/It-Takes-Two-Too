@@ -10,6 +10,8 @@ struct Point {
 // Ref: base codes and https://gitlab.com/wikibooks-opengl/modern-tutorials/-/tree/master/text01_intro
 TextRenderer::TextRenderer(std::string font_file_path_from_dist) {
 	this->font_file_path = data_path(font_file_path_from_dist);
+	// init freetype
+	FT_Init_FreeType( &library );
 
 	// Init shaders
 	text_shader_program = gl_compile_program(
@@ -70,8 +72,6 @@ TextRenderer::TextRenderer() : TextRenderer("font/Wellfleet/Wellfleet-Regular.tt
  */
 std::tuple<float, float> TextRenderer::render_text(std::string text, float x, float y, float sx, float sy, glm::vec4 color, uint32_t font_size) {
 	// init freetype
-	FT_Library library;
-	FT_Init_FreeType( &library );
 	FT_Face ft_face = nullptr;
 	FT_New_Face(library, font_file_path.c_str(), 0, &ft_face);
 

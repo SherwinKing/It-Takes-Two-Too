@@ -32,6 +32,7 @@
 class TextRenderer {
 private:
 	std::string font_file_path;
+	FT_Library library;
 	GLuint text_shader_program;
 	GLint attribute_coord;
 	GLint uniform_tex;
