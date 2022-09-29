@@ -1,0 +1,8 @@
+8
+1
+1 100 (1)Got it!
+Great! So this is a game of two players. I will call you player A, and call your friend player B. Both of you have 5 cards: 1, 2, 3, 4, and 5. In each round, you need to place a card (without letting your opponent see). Whoever places a card with higher value wins!
+
+In each new round, the player who wins in the previous round will play first. Then the other player can ask a "Yes-or-No" question to the winner. For example, "Is the card you just placed bigger than any card you placed before?". After get the anser, the other player places his/her card. Each player is allowed to lie for one question.
+
+Finally, who wins most rounds is the final winner! If you understand the game, we can proceed to play!

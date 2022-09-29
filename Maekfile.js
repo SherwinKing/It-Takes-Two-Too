@@ -142,7 +142,12 @@ const game_names = [
 	//maek.CPP('ColorTextureProgram.cpp'),  //not used right now, but you might want it
 	maek.CPP('Sound.cpp'),
 	maek.CPP('load_wav.cpp'),
-	maek.CPP('load_opus.cpp')
+	maek.CPP('load_opus.cpp'),
+	maek.CPP('TextParagraph.cpp'),
+	maek.CPP('TextRenderer.cpp'),
+	maek.CPP('ChoiceDialog.cpp'),
+	maek.CPP('ChoiceMode.cpp'),
+	maek.CPP('CardGame.cpp')
 ];
 
 const common_names = [
@@ -832,7 +837,7 @@ function init_maek() {
 		}
 
 		//get all hashes:
-		if (OS === 'windows') {
+		if (OS === 'macos') {
 			//work in serial since otherwise windows can run out of file descriptors:
 			const hashes = [];
 			for (let file of files) {

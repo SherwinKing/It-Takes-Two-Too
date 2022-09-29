@@ -3,6 +3,7 @@
 
 //The 'PlayMode' mode plays the game:
 #include "PlayMode.hpp"
+#include "ChoiceMode.hpp"
 
 //For asset loading:
 #include "Load.hpp"
@@ -15,6 +16,9 @@
 
 //for screenshots:
 #include "load_save_png.hpp"
+
+#include "TextRenderer.hpp"
+#include "TextParagraph.hpp"
 
 //Includes for libSDL:
 #include <SDL.h>
@@ -112,7 +116,8 @@ int main(int argc, char **argv) {
 	call_load_functions();
 
 	//------------ create game mode + make current --------------
-	Mode::set_current(std::make_shared< PlayMode >());
+	// Mode::set_current(std::make_shared< PlayMode >());
+	Mode::set_current(std::make_shared< ChoiceMode >());
 
 	//------------ main loop ------------
 
@@ -128,8 +133,13 @@ int main(int argc, char **argv) {
 		SDL_GL_GetDrawableSize(window, &w, &h);
 		drawable_size = glm::uvec2(w, h);
 		glViewport(0, 0, drawable_size.x, drawable_size.y);
+		static SDL_Event evt;
+		SDL_PollEvent(&evt);
+		Mode::current->handle_event(evt, window_size);
 	};
 	on_resize();
+
+
 
 	//This will loop until the current mode is set to null:
 	while (Mode::current) {
