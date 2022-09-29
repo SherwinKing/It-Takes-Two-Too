@@ -26,6 +26,11 @@ void ChoiceMode::go_to_next_dialog(uint32_t choice) {
     if (choice == 0)
         return;
 
+    if (card_game.is_active) {
+        current_dialog_ptr = &card_game.get_current_dialog();
+        return;
+    }
+
     try {
         current_dialog_id = current_dialog_ptr->get_next_dialog_id(choice);
     } catch (std::out_of_range & e) {
@@ -34,13 +39,22 @@ void ChoiceMode::go_to_next_dialog(uint32_t choice) {
     }
 
     // special game state dialog
-    if (current_dialog_id == 0) {
+    if (current_dialog_id == 100) {
         // TODO: implement
+        card_game.is_active = true;
+        current_dialog_ptr = &card_game.get_current_dialog();
         return;
     } else {
         current_dialog_ptr = &choice_dialogs[current_dialog_id];
     }
     return;
+}
+
+void ChoiceMode::handle_choice(uint32_t choice) {
+    if (card_game.is_active) {
+        card_game.handle_choice(choice);
+        return;
+    }
 }
 
 bool ChoiceMode::handle_event(SDL_Event const & event, glm::uvec2 const &window_size_input) {
@@ -82,6 +96,7 @@ void ChoiceMode::update(float elapsed) {
             current_choice = 5;
     } else if (space.pressed) {
         // if choice is invalid, do nothing
+        handle_choice(current_choice);
         go_to_next_dialog(current_choice);
         current_choice = 0;
     }

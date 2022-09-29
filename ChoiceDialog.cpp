@@ -35,6 +35,8 @@ ChoiceDialog::ChoiceDialog(std::ifstream & file) {
     }
 }
 
+ChoiceDialog::ChoiceDialog() {}
+
 uint32_t ChoiceDialog::get_next_dialog_id(uint32_t choice) {
     if (choice_to_next_dialog_map.find(choice) == choice_to_next_dialog_map.end()) {
         throw std::runtime_error("ChoiceDialog::get_next_dialog_id: Invalid choice.");

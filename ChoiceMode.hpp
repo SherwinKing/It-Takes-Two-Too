@@ -1,6 +1,7 @@
 #pragma once
 #include "Mode.hpp"
 #include "ChoiceDialog.hpp"
+#include "CardGame.hpp"
 #include "Load.hpp"
 #include "gl_errors.hpp"
 #include "data_path.hpp"
@@ -23,10 +24,14 @@ protected:
     uint32_t current_dialog_id = 0;
     ChoiceDialog * current_dialog_ptr;
 
-    void go_to_next_dialog(uint32_t choice);
 
     TextRenderer text_renderer;
     glm::uvec2 window_size;
+
+    CardGame card_game;
+
+    void handle_choice(uint32_t choice);
+    void go_to_next_dialog(uint32_t choice);
 
 public:
     ChoiceMode();

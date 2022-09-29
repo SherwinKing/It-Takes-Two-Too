@@ -10,7 +10,7 @@ private:
 public:
     TextParagraph(std::string text, 
         glm::vec4 color  = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-		uint32_t font_size = 16);
+		uint32_t font_size = 30);
 
     /**
      * Render the text paragraph at the given position.

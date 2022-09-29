@@ -18,11 +18,13 @@ protected:
 
 public:
     ChoiceDialog(std::ifstream & file);
+
+    ChoiceDialog();
     // ChoiceDialog(std::unordered_map<uint32_t, uint32_t> && choice_to_next_dialog_map,
     //              std::unordered_map<uint32_t, std::string> && choice_text_map,
     //              std::vector<TextParagraph> && text_paragraphs);
 
-    inline bool activate_choice(uint32_t choice) {
+    inline virtual bool activate_choice(uint32_t choice) {
         if (choice_to_next_dialog_map.find(choice) == choice_to_next_dialog_map.end()) {
             return false;
         }
@@ -30,11 +32,11 @@ public:
         return true;
     }
 
-    inline uint32_t get_current_choice_active() {
+    inline virtual uint32_t get_current_choice_active() {
         return current_choice_active;
     }
 
-    uint32_t get_next_dialog_id(uint32_t choice);
+    virtual uint32_t get_next_dialog_id(uint32_t choice);
 
     void render(TextRenderer & text_renderer);
 };
