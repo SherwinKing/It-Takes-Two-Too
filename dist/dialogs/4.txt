@@ -1,5 +1,5 @@
 4
 2
-1 0 (1)Okay. I understand. Developing a game is hard.
-2 0 (2)Okay. I totaly understand. Developing a game is super hard.
+1 5 (1)Okay. I understand. Developing a game is hard.
+2 5 (2)Okay. I totaly understand. Developing a game is super hard.
 Best choice you have ever made! Unfortunately the developer is still developing the game. I am afraid you need to wait for some time...

@@ -3,3 +3,5 @@ dialogs/1.txt
 dialogs/2.txt
 dialogs/3.txt
 dialogs/4.txt
+dialogs/5.txt
+dialogs/card.txt
