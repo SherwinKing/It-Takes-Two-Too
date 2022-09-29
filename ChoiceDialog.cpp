@@ -45,10 +45,11 @@ uint32_t ChoiceDialog::get_next_dialog_id(uint32_t choice) {
 }
 
 void ChoiceDialog::render(TextRenderer & text_renderer) {
-    float x = -0.9f;
-    float y = 0.9f;
+    float x = -0.8f;
+    float y = 0.8f;
     for (TextParagraph & paragraph : text_paragraphs) {
         y = paragraph.render(x, y, text_renderer);
+        y -= text_renderer.get_line_height_by_font_size(font_size);
     }
     y -= text_renderer.get_line_height_by_font_size(font_size);
     

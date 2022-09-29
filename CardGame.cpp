@@ -9,6 +9,7 @@ void CardGame::update_dialog() {
     std::map<uint32_t, std::string> choice_text_map;
     std::map<uint32_t, uint32_t> choice_to_next_dialog_map;
     std::string round_result_text;
+    std::string player_prepare_text;
     switch (game_state) {
         case A_PREPARE:
             dialog.set_choice_text_map({
@@ -17,8 +18,12 @@ void CardGame::update_dialog() {
             dialog.set_choice_to_next_dialog_map({
                 {1, 100}
             });
+            player_prepare_text = "A's turn. B should avoid watching. Tell me if ready.";
+            if (round_id > 0 && A_first) {
+                player_prepare_text += " By the way, A may ask B a yes-or-no question now. Remember, each player has one chance to lie";
+            }
             dialog.set_text_paragraphs({
-                TextParagraph("A's turn. B should avoid watching. Tell me if ready.")
+                TextParagraph(player_prepare_text)
             });
             break;
         case A_TURN:
@@ -43,8 +48,12 @@ void CardGame::update_dialog() {
             dialog.set_choice_to_next_dialog_map({
                 {1, 100}
             });
+            player_prepare_text = "B's turn. A should avoid watching. Tell me if ready.";
+            if (round_id > 0 && !A_first) {
+                player_prepare_text += " By the way, B may ask A a yes-or-no question now. Remember, each player has one chance to lie";
+            }
             dialog.set_text_paragraphs({
-                TextParagraph("B's turn. A should avoid watching. Tell me if ready.")
+                TextParagraph(player_prepare_text)
             });
             break;
         case B_TURN:
@@ -92,6 +101,9 @@ void CardGame::update_dialog() {
             } else {
                 game_result_text = "Draw the game.";
             }
+            dialog.set_text_paragraphs({
+                TextParagraph("Game result: " + game_result_text + "Thank you for playing!")
+            });
             break;
     }
 }
@@ -105,10 +117,10 @@ void CardGame::transition_to_next_state() {
             if (A_card_placing == 0) {
                 return;
             }
-            if (A_first) {
-                game_state = B_PREPARE;
-            } else {
+            if (round_results.size() == round_id + 1) {
                 game_state = ROUND_RESULT;
+            } else {
+                game_state = B_PREPARE;
             }
             break;
         case B_PREPARE:
@@ -118,27 +130,33 @@ void CardGame::transition_to_next_state() {
             if (B_card_placing == 0) {
                 return;
             }
-            if (A_first) {
+            if (round_results.size() == round_id + 1) {
                 game_state = ROUND_RESULT;
             } else {
                 game_state = A_PREPARE;
             }
             break;
         case ROUND_RESULT:
-            if (round_id == 5) {
+            if (round_id == 4) {
                 game_state = GAME_RESULT;
                 break;
             }
-            if (round_results[round_id] == A_WIN) {
+            if (A_first)
                 game_state = A_PREPARE;
-            } else if (round_results[round_id] == B_WIN) {
+            else
                 game_state = B_PREPARE;
-            } else {
-                if (A_first)
-                    game_state = B_PREPARE;
-                else
-                    game_state = A_PREPARE;
-            }
+
+            // if (round_results[round_id] == A_WIN) {
+            //     game_state = A_PREPARE;
+            // } else if (round_results[round_id] == B_WIN) {
+            //     game_state = B_PREPARE;
+            // } else {    // Draw
+            //     if (A_first)
+            //         game_state = B_PREPARE;
+            //     else
+            //         game_state = A_PREPARE;
+            // }
+            round_id++;
             break;
         case GAME_RESULT:
             break;
@@ -170,18 +188,22 @@ bool CardGame::finish_round() {
     }
     
     std::string result_string;
+    assert(round_results.size() == round_id);
     if (A_card_placing == B_card_placing) {
         result_string = "Draw!";
-    }
-    if (A_card_placing > B_card_placing) {
+        round_results.push_back(DRAW);
+        A_first = !A_first;
+    } else if (A_card_placing > B_card_placing) {
         A_score++;
         result_string = "A wins!";
+        round_results.push_back(A_WIN);
+        A_first = true;
     } else {
         B_score++;
         result_string = "B wins!";
+        round_results.push_back(B_WIN);
+        A_first = false;
     }
-    round_id++;
-    A_first = !A_first;
     return true;
 }
 
