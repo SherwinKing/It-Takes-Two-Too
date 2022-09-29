@@ -22,7 +22,9 @@ public:
     ChoiceDialog();
     // ChoiceDialog(std::unordered_map<uint32_t, uint32_t> && choice_to_next_dialog_map,
     //              std::unordered_map<uint32_t, std::string> && choice_text_map,
-    //              std::vector<TextParagraph> && text_paragraphs);
+    //              std::vector<TextParagraph> && text_paragraphs)
+    
+    virtual ~ChoiceDialog() {}
 
     inline virtual bool activate_choice(uint32_t choice) {
         if (choice_to_next_dialog_map.find(choice) == choice_to_next_dialog_map.end()) {
