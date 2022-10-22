@@ -5,6 +5,8 @@
 #include "Load.hpp"
 #include "gl_errors.hpp"
 #include "data_path.hpp"
+#include "ImageRenderer.hpp"
+#include "load_save_png.hpp"
 
 
 const std::string font_file_path_from_dist = "font/Wellfleet/Wellfleet-Regular.ttf";
@@ -26,6 +28,7 @@ protected:
 
 
     TextRenderer text_renderer;
+    ImageRenderer image_renderer;
     glm::uvec2 window_size;
 
     CardGame card_game;
@@ -41,6 +44,7 @@ public:
 
     inline virtual void resize(glm::uvec2 const &window_size_input) {
         window_size = window_size_input;
+        image_renderer.resize(window_size[0], window_size[1]);
         text_renderer.resize(window_size[0], window_size[1]);
     }
 };

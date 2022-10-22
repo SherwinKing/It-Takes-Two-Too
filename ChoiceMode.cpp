@@ -1,6 +1,19 @@
 #include "ChoiceMode.hpp"
 #include "GL.hpp"
 
+Load<ImageData> background_image_load(
+    LoadTagDefault,
+    []() -> ImageData * {
+        // std::ifstream background_image_file(data_path("/background.png"), std::ios::binary);
+        // unsigned int width, height;
+        // load_png(data_path("/background.png"), &width, &height, &image_data_ptr->pixels, LowerLeftOrigin);
+        ImageData * image_data_ptr = new ImageData();
+        load_png(data_path("/background.png"), &image_data_ptr->size, &image_data_ptr->pixels, LowerLeftOrigin);
+        // image_data_ptr->size = glm::uvec2(width, height);
+        return image_data_ptr;
+    }
+);
+
 Load< std::vector<ChoiceDialog> > choice_dialog_vector_load(
     LoadTagDefault,
     []() -> std::vector<ChoiceDialog> * {
@@ -113,6 +126,9 @@ void ChoiceMode::draw(glm::uvec2 const &drawable_size) {
     // Eye protecting warm yellow background
     glClearColor(1, 1, 0.9, 0.5);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    //draw background
+    image_renderer.render_image(*background_image_load, 0, 0);
 
     //render the current dialog
     current_dialog_ptr->render(text_renderer);

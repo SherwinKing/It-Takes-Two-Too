@@ -145,6 +145,7 @@ const game_names = [
 	maek.CPP('load_opus.cpp'),
 	maek.CPP('TextParagraph.cpp'),
 	maek.CPP('TextRenderer.cpp'),
+	maek.CPP('ImageRenderer.cpp'),
 	maek.CPP('ChoiceDialog.cpp'),
 	maek.CPP('ChoiceMode.cpp'),
 	maek.CPP('CardGame.cpp')
